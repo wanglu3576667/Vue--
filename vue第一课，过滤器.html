@@ -27,7 +27,9 @@
                 filters:{
                     watches:function (value){
                         function xxx(value){
-                            return value.length === 1?0+value:value
+                            console.log(value)
+                            return a=(value < 10) ? '0'+value : value
+                            //console.log(a)
                         }
                         let date = new Date(value)
                         let year = date.getFullYear()
@@ -39,6 +41,10 @@
                         
                         return `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`
                     }
+                },
+                //实例销毁之前调用。在这一步，实例仍然完全可用。
+                beforeDestory:function (){
+                    clearInterval(this.timer)
                 }
             })
     </script>
