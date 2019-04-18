@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>vue过滤器</title>
+</head>
+<body>
+    <!--过滤器用一个管道符表示 后面是filters对象里面的函数，它会动态过滤，执行时会把管道符前面的变量当做参数传进去，
+    接受多个自定义参数，传入的第一个参数相当于第二个，第二个相当第三个，因为默认管道符前面的变量为第一个参数，后面还能
+    接管道符合过滤函数，会把自身的返回值传给后面的函数，文本输出最终会被替换成函数的return值-->
+    <div>{{date | watches}}</div>
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <script>
+        var app = new Vue({
+                el:'div',
+                data:{
+                    date:new Date()
+                },
+                mounted:function (){
+                    var timer = setInterval(()=>{
+                        this.date = new Date()
+                    },1000)
+                },
+                //filters里面函数的this指向window，卧槽
+                filters:{
+                    watches:function (value){
+                        function xxx(value){
+                            return value.length === 1?0+value:value
+                        }
+                        let date = new Date(value)
+                        let year = date.getFullYear()
+                        let month = date.getMonth()
+                        let day = date.getDate()
+                        let hours = xxx(date.getHours())
+                        let minutes= xxx(date.getMinutes())
+                        let seconds = xxx(date.getSeconds())
+                        
+                        return `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`
+                    }
+                }
+            })
+    </script>
+</body>
+</html>

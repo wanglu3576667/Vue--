@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>vue第一课</title>
+</head>
+<body>
+    <div id="app">
+        <!--文本插值-->
+        <!--双大括号里面可以插入data对象的属性，会变成对应的属性值-->
+        {{msg}}<hr>
+        <!--可以用表达式，但不能为语句或流程控制-->
+        {{1+1}}<hr><!--文本输出2-->
+        {{msg?1:2}}<hr><!--文本输出1-->
+
+        <!--指令-->
+        <!-- v-bind 用于动态绑定元素的属性，如id class等等-->
+        <span v-bind:title='msg'>鼠标放上来</span><hr>
+        <!-- v-text 用于更新元素的 textContent。如果要更新部分的 textContent ，需要使用 {{ Mustache }} 插值。-->
+        <span v-text='msg'>fdfsdfsdfsdfsd<span>ggggg</span></span><hr>
+        <!-- v-html 用于更新元素的 innerHTML-->
+        <span v-html='html'>fdfsdfsdfsdfsd<span>ggggg</span></span><hr>
+        <!-- v-on 用于给元素添加绑定事件-->
+        <button v-on:click='add'>点我{{a}}</button>
+        <button v-on:click='fun'>点我{{a}}</button>
+
+
+    </div>
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <script>
+        //创建vue实例（vue应用）
+        var app = new Vue({
+            //'el'指定页面中的DOM，用来挂载vue实例，这个Dom元素是vue实例的挂载目标
+            el:'#app',
+            //vue实例的data对象，Vue 将会递归将 data 的属性转换为 getter/setter，'data'用来声明应用中需要双向绑定的数据
+            data:{
+                msg:'hello word',
+                html:'<div style="background-color:red; height:20px;"></div>',
+                a:1
+            },
+            //生命周期钩子之created，该钩子会在vue实例创建，el 尚未指定Dom之前触发，此时vue实例还未挂载
+            created:function(){
+                //这里的this指向Vue实例
+                console.log(this)
+                alert('刚刚创建vue实例')
+            },
+            //生命周期钩子之mounted, el 被新创建的 vm.$el 替换,并刚刚挂载到实例之后触发，一般第一个业务逻辑在这里开始
+            mounted:function (){
+                alert('{{msg}}还没有被替换')
+            },
+            //methods 将被混入到 Vue 实例中。可以直接通过 VM 实例访问这些方法，或者在指令表达式中使用。方法中的 this 自动绑定为 Vue 实例。
+            methods:{
+                fun:function(){
+                    console.log(this)
+                },
+                add:function(){
+                    this.a++
+                }
+            }
+        })
+
+        console.log(app.$el,app.$data,app.$created,app.$mounted,app.$methods)
+        
+    
+    </script>
+</body>
+</html>
