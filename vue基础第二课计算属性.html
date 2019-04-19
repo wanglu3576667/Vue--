@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>计算属性</title>
+    <style>
+        .demo>div{border: black 1px solid;margin-top:10px;}
+    </style>
+</head>
+<body>
+    <div v-bind:class="className" id="demo">
+        <div>{{message}}</div>
+
+        <!--模板内的表达式非常便利，但是设计它们的初衷是用于简单运算的。在模板中放入太多的逻辑会让模板过重且难以维护
+            所以，对于任何复杂逻辑，你都应当使用计算属性-->
+        <div>{{'字符串反转: '+message.split('').reverse().join('')}}</div>
+
+        <!--插入计算属性,它是属性，调用该属性会执行它的get函数，计算属性还可以依赖多个 Vue 实例的数据，
+            只要其中任一数据变化，计算属性就会重新执行，除了它所依赖的数据发生变化之外，计算属性不会更新-->
+        <div>{{'用到了计算属性： '+count}}</div>
+
+        <!--用一下计算属性set方法-->
+        <div>{{count2}}</div>
+        <div>{{count2='王禄'}}</div>
+
+        <!--当methods对象里面的方法当如文本插值调用时，每当页面触发重新渲染时，调用方法将总会再次执行函数-->
+        <div>{{time()}}</div>
+    </div>
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <script>
+        var a = new Vue({
+                el:'#demo',
+                data:{
+                    message:'12345',
+                    className:'demo',
+                    haha:111,
+                    firstName:'李',
+                    lastName:'四'
+                },
+                created:function (){
+                    alert('实例创建，尚未挂载dom')
+                },
+                mounted:function (){
+                    console.log('实例刚刚挂载dom，此时还没进行渲染')
+                },
+                methods:{
+                    //当methods对象里面的方法当如文本插值调用时，每当页面触发重新渲染时，调用方法将总会再次执行函数
+                    time:function (){
+                        return new Date()
+                    }
+                },
+                //计算属性写在这里
+                computed:{
+                    //这不是在声明count函数，而是给count属性设置get函数
+                    count:function (){
+                        return this.message.split('').reverse().join('')
+                    },
+                    //也能使用计算属性的set方法，不过这样就需要先设置该属性的get与set
+                    count2:{
+                        get:function (){
+                            console.log('我是get')
+                           return this.firstName+this.lastName
+                        },
+                        //给count2赋值，set方法调用，vue实例的data对象中的first/lastName的值被更新
+                        set:function (value){
+                            console.log('我是set我接受到的参数是' +value)
+                            var name = value.split('')
+                            this.firstName = name[0]
+                            this.lastName = name[1]
+                        }
+                    }
+                }
+                
+            })
+    </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>购物车</title>
+</head>
+<body>
+    <p id="shoppingCart">你总共花费{{totalValue}}</p>
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <script>
+        var a= new Vue({
+            el:'#shoppingCart',
+            data:{
+                shoppingList:[
+                    {name:'苹果手机',unitPrice:4999,amout:2},
+                    {name:'香蕉',unitPrice:5,amout:100},
+                    {name:'充气娃娃',unitPrice:3333,amout:1}
+                ]
+            },
+            computed:{
+                totalValue:function (){{
+                    let cost = 0
+                    this.shoppingList.forEach((value,key,arr)=>{
+                        cost+=value.unitPrice*value.amout
+                    });
+                    return cost
+                }}
+            }
+
+        })
+    </script>
+</body>
+</html>
