@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+       
+<body>
+    <section id="section">
+        <!--变量名渲染后被替换成样式-->
+      <div  div v-bind:style="style1">v-bind绑定style,单一变量语法</div>
+      <!--属性为样式名，属性值为变量，变量渲染后被替换成参数-->
+      <div  div v-bind:style="{'font-size':font,'background-color':bg}">v-bind绑定style,对象语法</div>
+      <!--每一个成员代表一个对象，属性为样式名，值为参数-->
+      <div  div v-bind:style="[arr1,arr2]">v-bind绑定style,数组语法</div>
+      
+    </section>
+        
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <script>
+        new Vue({
+            el:'#section',
+            data:{
+                style1:'background-color:yellow;height:100px',
+                font:'50px',
+                bg:'red',
+                arr1:{
+                    'background-color':'blue',
+                    border:'red solid 1px'
+                },
+                
+            },
+            methods:{
+
+            },
+            filters:{
+                //过滤器
+            },
+            created:function(){
+                //实例创建触发该钩子
+            },
+            mouteds:function(){
+                //实例挂在后的第一个业务逻辑
+            },
+            beforeDestory:function(){
+                //声明周期钩子，实例销毁前调用
+            },
+            computed:{
+                //计算属性。。。。。。get
+            }
+        })
+    </script>
+</body>
+</html>
