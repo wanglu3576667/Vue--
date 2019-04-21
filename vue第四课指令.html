@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>vue指令</title>
+    <style>
+        [v-clock]{
+            display: none;
+        }
+        .gongyou{position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%)}
+        .yeye{position: relative; width: 500px;height: 500px;background-color: yellowgreen;text-align: center;}
+        .baba{width: 300px;height: 300px;background-color: turquoise;text-align: center;}
+        .sunzi{width: 100px;height: 100px;background-color: tomato;text-align: center;}
+    </style>
+</head>
+<body>
+    <section>
+        <!--该指令配合css使用，在vue实例没有编译完之间，加上v-clock的元素不会显示
+            解决了页面闪烁的bug，闪烁：刚加载页面出来的{{mes}}，这个不希望被看到-->
+        <div v-clock>{{mes}}</div>
+
+        <!--使用v-once，则该元素值渲染一次，无论怎么改变mes1，都不让渲染了-->
+        <div v-once>{{mes1}}</div>
+
+        <!--v-if会销毁或重建元素，并且指令会复用元素，也就是说销毁重建元素时会对比两个元素，只会改变不同地方
+        添加key属性可以让元素全部重新渲染而非复用-->
+        <div v-if="bool" key='1'>v-if</div>
+        <div v-else-if="bool === false && bool1" key='2'>v-else-if</div>
+        <div v-else key='3'>v-else</div>
+        <button @click="Vif">v-if</button>
+
+        <!--v-show会切换元素的display属性来显示隐藏元素-->
+        <div v-show="show">v-show</div>
+
+        <div>
+            <!--v-for循环对象，指令添加到需要循环遍历的元素上，与js里面不同的是，不是 key in obj 而是value ino bj-->
+            <p v-for="value in obj">{{value}}</p>
+            <!--v-for循环，()中第一个为值，第二个为属性,第三个为索引-->
+            <p v-for="(value,key,index) in obj">{{key+index+value}}</p>
+        </div>
+
+        <div>
+             <!--v-for循环数组，指令添加到需要循环遍历的元素上，与js里面不同的是，不是 key in obj 而是value ino bj-->
+            <p v-for="value in obj2">{{value.name+value.age}}</p><hr>
+            <!--数组只有属性与值，属性就是下标-->
+            <p v-for="(value,key) in obj2">{{value}}</p>
+        </div><hr>
+
+        <div>
+            <p v-for = "value in arr">{{value}}</p>
+            <!--数组方法-->
+        <button @click="pop">pop</button>
+         <button  @click="push">push</button>
+          <button  @click="shift">shift</button>
+           <button  @click="unshift">unshift</button>
+            <button  @click="splice">splice</button>
+             <button  @click="sort">sort</button>
+                <button  @click="filter">filter</button>
+            </div><hr>
+
+        <div>
+            <!--只执行一次 once -->
+            <div class="yeye"  @click.once="yeye">
+                我是爷爷
+                <!--.self代表只能自己触发自己，冒泡或捕获阶段如果只想忽略这个元素且不影响事件传播，这是一个好方法-->
+                <!--.stop阻止事件传播，修饰符可链式调用-->
+                <div class="baba gongyou"  @click.self.stop="baba">
+                    我是爸爸
+                    <div class="sunzi gongyou"  @click="sunzi">
+                        我是孙子
+                        <.prevent阻止默认事件>
+                        <a href="www.baidu.con" @click.prevent>阻止事件默认事件</a>
+                    </div>
+                </div>
+            </div>
+            <!--@keyup.13 @keyup.enter 。。。。。。对应键盘事件的按键 -->
+        </div>
+    </section>
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <script>
+     var a=   new Vue({
+            el:'section',
+            data:{
+                mes:'v-clock',
+                mes1:'v-once',
+                bool:true,
+                bool1:true,
+                show:false,
+                obj:{
+                    name:'王禄',
+                    age:18,
+                },
+                obj2:[
+                    {name:'李四',age:13},
+                    {name:'李5',age:133},
+                ],
+                arr:[
+                    'wocao',
+                    'shabi',
+                    'wogan',
+                ]
+
+                
+                
+            },
+            methods:{
+                Vif(){
+                    if(this.bool === false && this.bool1 === true){
+                        this.bool1 = false
+                    }else{
+                        this.bool = !this.bool
+                    }
+                },
+                pop(){
+                    this.arr.pop()
+                },
+                push(){
+                    this.arr.push('新来的在后1')
+                },
+                shift(){
+                    this.arr.shift()
+                },
+                unshift(){
+                    this.arr.unshift('新来的在前1')
+                },
+                splice(){
+                    this.arr.splice(0,1,'splice')
+                },
+                sort(){
+                    this.arr.sort(function(a,b){
+                        console.log(b.length - a.length )
+                        return b.length - a.length 
+                      
+                    })
+                },
+                filter(){
+                   this.arr =  this.arr.filter(function(value){
+                            return value === 'wogan'
+                      
+                    })
+                },
+                yeye(){
+                    alert('点了你爷爷')
+                },
+                baba(){
+                    alert('点了你爸爸')
+                },
+                sunzi(){
+                    alert('点了你自己')
+                }
+
+            }
+        })
+    </script>
+</body>
+</html>
