@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>v-model实现input上的数据双向绑定</title>
+    <style>
+    [v-cloak]{display: none}
+    </style>
+</head>
+<section>
+    <!-- v-model实现表单的value与vue数据的双向绑定，它会忽略表单的初始value值，也就是说表单的渲染，value值不会出现在页面上
+    当在表单疏输入text，v-model会读取表单的value，将value传给变量。当赋值变量后，v-model会读取变量，将变量传给value-->
+    <!--当用js修改表单的value时，v-model不会读取表单的value，我试过了，用控制台更改表单的value，变量没有变化-->
+    <!--lazy修饰符trim修饰符number修饰符-->
+    <div v-cloak>
+        <span v-if='vif'>
+            <label for="" >请输入用户名：<input id="user" type="text" v-model.lazy.trmi='user' placeholder="请输入用户名" key='user'>{{user}}</label>
+        </span> 
+        <span v-else>
+            <label for="">请输入密码：<input type="password" placeholder="请输入密码" key='password'></label>
+        </span>
+        <button @click='active'>点击切换</button>
+    </div><hr>
+
+    <div v-cloak>
+        <!--单or多选，初始checked属性默认失效-->
+        <!--单选表单，radio会显示value的值这点毋庸置疑，当radio的值与value不一样时，会自动取表单消选定，也就是说当我动态修改radio
+        也能对表单进行选择或者取消。当我反过来操作就会出现一个很奇怪的现象，当我在控制台修改表单的value，再次更改选项时，radio不会变，
+        例如我把 value='苹果'改成香蕉，当我在次选择该选项时，radio还是苹果，来回切换选择多次，也还是苹果，并没有发生变化，
+        最后用v-bind绑定解决-->
+       苹果：<input id="radio" type="radio" name='fruits' :value="b" v-model='radio'>
+       栗子：<input id="radio" type="radio" name='fruits' :value="c" v-model='radio'><br>  {{radio}}
+    </div>
+    <!-- 多选表单，当v-model绑定的变量为字符串或数字，会转换布尔为true或false，对应着全选或全不选，如果是一个数组，就可以正常多选
+    或者取消，选中的表单value会当做成员传入checkbox数组,它俩实现双向绑定-->
+    <div v-cloak>
+        打篮球：<input type="checkbox" id="checkbox" name="play" value="打蓝球" true-value="yes" false-value="no" v-model="checkbox">
+        踢足球：<input type="checkbox" id="checkbox" name="play" value="踢足球" true-value="yes" false-value="no"  v-model="checkbox">
+        游泳：<input type="checkbox" id="checkbox" name="play" value="游泳" true-value="yes" false-value="no"  v-model="checkbox">
+        搞破鞋：<input type="checkbox" id="checkbox" name="play" value="搞破鞋" true-value="yes" false-value="no"  v-model="checkbox">
+        <p>{{checkbox}}</p>
+    </div>
+
+    <!--select表单，v-model绑定在select标签上，option.value与变量select双向绑定-->
+    <div v-cloak>
+        <select name="city" id="city" v-model='select'>
+            <option v-for="CITY in obj" :value="CITY">{{CITY}}</option>
+        </select>
+        {{select}}
+    </div>
+</section>
+
+
+<body>
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
+    <script>
+    var a =    new Vue({
+            el:'section',
+            data:{
+                vif:true,
+                user:'',
+                radio:'',
+                checkbox:[],
+                select:'古冶',
+                obj:[
+                    '古冶','开平','路北'
+                ],
+                b:'苹果',
+                c:'香蕉'
+            },
+            methods:{
+                active(){
+                    this.vif = !this.vif
+                },
+               
+            },
+            created:function(){
+                alert('欢迎使用vue')
+            },
+            mounted:function(){
+                alert('hello word')
+            },
+            filters:{
+                filter(value){
+                    console.log(value.join(''))
+                    return value.join('_')
+                }
+            }
+        })
+    </script>
+</body>
+</html>
