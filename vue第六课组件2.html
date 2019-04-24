@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>vue组件2</title>
+    <style>
+    *{margin: 0;padding: 0;box-sizing: border-box;}
+    .vue{
+        height: 550px;
+        border:1px solid brown;
+        display: inline-block;    
+    }
+    .vue>*{
+        margin:10px;
+    }
+    </style>
+</head>
+<body>
+    <div class="vue">
+        <!-- v-on接自定义事件名称 通过jieshou函数处理数据，事件监听部署在触发自定义事件的子组件上-->
+        <quan-juzu-jian :msg='F1' @z_f='jieshou' :msg1='z_f1'></quan-juzu-jian>
+        <div :style="style" >接收到的子传父的数据是：{{z_f1}}</div>
+    </div>
+
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <script>
+        Vue.component('quanJuzuJian', {
+            template:`<div :style="[style]">
+                        <p>这里是全剧组件</p>
+                        <span>{{msg}}<span>
+                        <span>这里是父级传过来的数据，该数据是子组件传过来的{{msg1}}<span><hr>
+                        <input type="text" v-model="value" @input="input">
+                      </div>`,
+            props:{
+                msg:{type:String},
+                msg1:{tyoe:String}
+            },
+            data(){
+                return {
+                    style:{
+                        border:'1px solid black',
+                    },
+                    value:'通过input事件触发自定义事件'
+                }
+            },
+            methods:{
+                input(){
+                    //通过组件的$emit方法定义且触发事件，第一个参数为事件名称，接下来为需要传递的数据
+                    this.$emit('z_f',this.value)
+                }
+            }
+            
+        })
+
+ /*-------------------------------------------------------------------------------------------------------------------------*/       
+        new Vue({
+            el:'.vue',
+            data:{
+                F1:'这里是根实例的属性',
+                style:'border:1px solid red',
+                z_f1:null,
+            },
+            methods:{
+                //想要拿到子组件传来的数据，子组件传了几个，这里就要对应的写几个参数
+                jieshou(value){
+                    this.z_f1 = value
+                }
+            }
+        })
+    </script>
+</body>
+</html>

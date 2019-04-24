@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>vue组件</title>
+</head>
+<body>
+    <section>
+        <input type="text" v-model="baba">
+
+        <!--只要符合html标签的命名规则，干就完了-->
+        <zujianming></zujianming>
+
+        <!--这是我创建的局部组件-->
+        <!--我将变量baba传递给自定义属性prop，prop将作为子组件的属性，这个子组件实例可以调用它。
+        baba是根实例的属性，所以这就实现了父传子。你要知道，这个传递是单向的，当我用v-bind绑定了prop，
+        每次baba发生改变，都会影响到prop。但改动prop是不会影响baba的。-->
+        <wogannidaye :prop='baba'></wogannidaye>
+    </section>
+
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <script>
+        //创建全局组件，谁都能用，组件是vue实例！拥有除了 el这样根实例以外的的属性和方法；组件可复用
+        //例如data，methods,computed,created,filters，mouted等等
+        Vue.component('zujianming',//第一个参数为组件名称，当做html标签插入vue根实例即可使用，注意命名格式，html会把大写字母看做小写
+            {
+                data(){//你要知道，根实例的data与子组件实例的data作用域是不同的
+                    return {
+                        a:1,
+                        b:'2',
+                        obj:{
+                            width:'200px',
+                            height:'200px',
+                            background:'red'
+                        }
+                    }
+                },//在组件中，data选项必须是一个函数，这与vue根实例不同,好处就是组件使用的是data函数返回的对象，每次复用，返回的对象都不在一个地址。
+                template:`<div v-on:click="a++" :style='obj'>
+                            <span>{{a+b}}</span>
+                        </div>`,//必须项，定义组件的模板
+            }//第二个参数是对象，关于组件的一些选项部署在上面
+            )
+
+            new Vue({
+                el:'section',
+                data:{
+                    baba:'你好我的儿子'
+                },
+                //创建局部组件，即只能在该根实例使用
+               
+                components:{//名字别搞混，这里有s
+                  
+                    wogannidaye:{//这里是组件名称，你需要明白js中对象属性的命名规则
+
+                        props:['prop'],//你要知道，子组件实例是用props选项来接收来自父组件传递的值的,props选项要放在前面，不然变量会undifind
+
+                        data(){return {msg:this.prop}},//你可以把props的属性放在这里倒一把手,如果用v-bind绑定的prop，这样做就能定死msg的值。也就是说父组件传递的值放生变化不会影响到msg
+                        
+                        template:`<div>
+                                    <h1>王禄</h1>
+                                    <span>{{prop+msg}}</span>
+                                    <p>{{reverse}}</p>
+                                </div>`,//这里是组件模板，你需要明白，模板中必须有一个祖宗级别的元素，如同<html>标签一样取包裹其他的东西
+                        
+                        computed:{
+                            reverse(){
+                                return this.prop.split('').reverse().join('')//当然，你也可以用到计算属性去加工prop
+                            }
+                        },
+                        created(){
+                            alert('我是组建')
+                        },//components对象中可添加子组件选项，例如这个钩子
+                    },
+    
+                }
+            })
+    </script>
+</body>
+</html>

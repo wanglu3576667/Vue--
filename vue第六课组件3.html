@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>vue组件</title>
+</head>
+<style>
+    .parent{
+        width:500px;
+        height: 500px;
+        margin:50px auto;
+        border:black 1px solid;
+    }
+    .a{
+        width: 80px;
+        margin:50px auto;
+        border:rebeccapurple 1px solid;
+    }
+</style>
+<body>
+    <div class="parent">
+        {{msg}}
+        <input type="text" v-model='input' @input='input1'>
+        <!--用ref来个子组件命名，方便根实例找到它-->
+        <zujian1 ref="one">
+            <h1>我是插槽</h1>
+            <h2>我是插槽</h2>
+            <h3>我是插槽</h3>
+            <h4>我是插槽</h4>
+        </zujian1>
+        <zujian2>
+                <!--新的语法 v-slot指令同时给slot属性命名，也给slot-scope命名为呵hehe-->
+                <template v-slot:one='hehe'><h1>{{hehe.value}}我是具名插槽1</h1></template>
+               
+               <!--旧的语法,slot-scope可以拿到子组件slot标签里面的除了name以外的所有属性，用一个prop对象盛放-->
+                <h2 slot="two" slot-scope='prop'>{{prop.value}}</h2>
+                
+                <h3>我是具名插槽</h3>
+                <h4>我是具名插槽</h4>
+        </zujian2>
+                <!--切换子组件-->
+                <component v-bind:is="曹尼玛"></component>
+                <button @click='qiehuan'>ccc</button>
+
+    </div>
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <script>
+        new Vue({
+            el:'.parent',
+            data:{
+                //根实例中创建一个空的vue实例作为两个子组件的媒介
+                event:new Vue()
+                ,msg:'我是你爸爸'
+                ,input:''
+                ,曹尼玛:'zujian'
+                ,n:1
+            },
+            methods:{
+                input1(){
+                    //由下可知，根实例通过链式操作也能找到子组件，
+                    this.$refs.one.jieshou1 = this.input
+                    //该属性返回一个数组，包含了所有具有ref属性的子组件
+                    console.log(this.$refs)
+                },
+                qiehuan(){
+                    if(this.n===1){
+                        this.n++
+                        this.曹尼玛='zujian1'  
+                    }else {
+                        this.曹尼玛='zujian2'
+                        this.n=1
+                    }
+                }
+               
+            },
+            created(){
+                console.log(this.$slots)
+            },
+            components:{
+                zujian1:{
+                    template:`<div class="a">
+                                <button @click="zujian1">组件1</button>
+                                <p>我是组件1{{jieshou1}}</p>
+                                <slot><slot>
+                              </div>`,//类似于slot标签这样的书写方式，无论从父组件作用域插入多少内容，全部插入，位置就是slot的位置,
+                                        //你需要知道 这种纯slot标签 会显示所有没有slot属性的元素 凡是带有slot属性的元素，一律不显示
+                    data(){
+                        return {
+                            zujian1_value:'我是组件1',
+                            jieshou1:'',
+
+                        }
+                    },
+                    methods:{
+                        zujian1(){
+                            //链式操作找到空vue实例，用它创建并触发自定义事件
+                            this.$root.event.$emit('zujian1',this.zujian1_value)
+                            //由上可知，我们通过链式操作可以拿到父组件的属性，且可修改
+                            this.$parent.msg = '我是你儿子'
+                        }
+                    },
+                    created(){
+                        //通过created钩子的特性，即该实例创建后立即执行该函数，通过链式找到空vue实例，用它来监听事件。因为事件是它触发的
+                        //所以它也能监听
+                        this.$root.event.$on('zujian2',(value)=>{this.jieshou1 = value}) 
+                    }
+                },
+                zujian2:{
+                    template:`<div class="a">
+                                <button  @click="zujian2">组件2</button>
+                                <p>我是组件2{{jieshou2}}</p>
+                                <slot name="one" :value="value"></slot>
+                                <slot name="two" :value="value">你他吗没查</slot>
+                              </div>`,//具名插槽的用法，指定插入元素的slot属性值
+                    data(){
+                        return {
+                            jieshou2:'',
+                            zujian2_value:'我是组件2',
+                            value:'天机'
+                        }
+                    },
+                    methods:{
+                        zujian2(){
+                            this.$root.event.$emit('zujian2',this.zujian2_value)
+                        }
+                    },
+                    created(){
+                        this.$root.event.$on('zujian1',(value)=>{this.jieshou2 = value}) 
+                    },
+                    mounted(){
+                        //拿到slot对应的插入标签
+                        console.log(this.$slots.two)
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+</html>
