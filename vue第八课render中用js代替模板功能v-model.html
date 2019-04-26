@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>render与v-model</title>
+</head>
+<body>
+        <section>
+            <my-component :value="value" v-model="value">
+                <div slot="one">我操你大爷</div>
+                <div slot="two" slot-scope="prop">我操你2大爷{{prop.text}}</div>
+            </my-component>
+            <my-component2>
+                    <div slot="one">我操你大爷</div>
+                    <div slot="two" slot-scope="prop">我操你2大爷{{prop.text}}</div> 
+                    <div slot="three">我操你大爷</div>
+                    <div slot="one">我操你大爷</div>
+
+                  
+            </my-component2>
+        </section>
+        <script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
+        <script>
+            new Vue({
+                el:'section',
+                data:{
+                    value:''
+                },
+                //需要触发input事件向父组件传递数据，然后父传子
+                components:{
+                    'my-component':{
+                        props:['value'],
+                        render(createElement){
+                            let self = this
+                            return createElement('div', [
+                                createElement('input',{
+                                        on:{
+                                            //这里是重点
+                                            input:(event)=>{
+                                                this.$emit('input',event.target.value)
+                                            }
+                                        }
+                                    } 
+                                ),
+                                createElement('input',{
+                                       attrs:{title:'第二个input'},
+                                       domProps:{
+                                           //在render函数内部使用props
+                                           value:self.value
+                                       }
+                                    } 
+                                ),
+                                //这是一个vnode，所以可以当作数组成员（静态插槽）
+                                //在模板中是这个样子的，<div><input><input><slot></slot></div>
+                                this.$slots.one,
+                                //这是一个vnode,所以可以当作数组成员，(访问作用域插槽)
+                                //在模板中是这个样子，<div><input><input><slot name="two" text="wocaonima"></slot></div>
+                                this.$scopedSlots.two({
+                                    text:'wocaonima'
+                                })
+                            ])     
+                        },
+                    },
+                    //没有管理任何状态，也没有监听任何传递给它的状态，也没有生命周期方法。实际上，它只是一个接受一些 prop 的函数。
+                    //在这样的场景下，我们可以将组件标记为 functional，这意味它无状态 (没有响应式数据)，也没有实例 (没有 this 上下文)。
+                    //一个函数式组件就像这样：
+                    'my-component2':{
+                        functional:true,
+                        props:{},
+                        //组件需要的一切都是通过 context 参数传递，它是一个包括如下字段的对象：详见文档
+                        render(createElement,content){
+                                console.log(content.children)
+                                return createElement('div',content.children)
+                        },
+                    }
+                },
+               
+            })
+        </script>
+</body>
+</html>

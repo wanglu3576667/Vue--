@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>自定义指令</title>
+</head>
+<body>
+    <section>
+        <input type="text" v-hehe:canshu.xiushifu1.xiushifu2='msg' v-model='msg'>{{msg}}
+        <hr>
+        <p v-hehe2:canshu.xiushifu1.xiushifu2='msg'></p>
+    </section>
+
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
+    <script>
+        
+        //创建全局指令,我刚才因为先创建vue根实例后创建全局指令，让全局指令失效了
+        Vue.directive('hehe',{
+            //有以下钩子
+            //只调用一次，当该指令绑定到元素上时触发
+            bind(){
+                alert('我绑定这个傻逼元素了')
+            },
+            //被绑定元素插入到父元素是触发（只要父节点存在即可，不一定非要被插入到文档中）
+            inserted(el){
+                el.focus()
+                alert('这个傻逼元素已经插入了')
+            },
+            //所在组件的 VNode 有局部更新时调用，但是可能发生在其子 VNode 更新之前
+            update(el){
+               
+                console.log(this)
+            },
+            //所在组件的VNode以及所有子VNode更新是调用
+            componentUpdate(){
+                alert('已经全部被修改了')
+            },
+            //指令与元素解绑时调用
+            unbind(){
+                alert('我已经和这个元素解绑了')
+            }
+        })
+        new Vue({
+            el:'section',
+            data:{
+                msg:'呵呵'
+            },
+            //局部创建自定义指令,记住该选项记得加s
+            directives:{
+                hehe2:{
+                    update(el,binding){
+                        el.innerHTML=`指令名：${binding.name}<br>
+                            指令绑定的值：${binding.value}<br>
+                            指令绑定的变量名：${binding.expression}<br>
+                            指令的参数：${binding.arg}<br>
+                            指令的修饰符：${binding.modifiers}
+                         `
+                    }
+                }
+            }
+        })
+
+    </script>    
+</body>
+</html>
