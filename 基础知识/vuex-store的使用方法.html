@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>vuex</title>
+</head>
+<body>
+        <script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
+        <script>
+            //npm install vuex
+            //在模块中引入vuex  import xxx from yyy
+            //让vuex插件在vue中使用  Vue.use(xxx)
+            //创建实例对象 new xxx.Store({'state','mutations','actions','getters'...})并导出模块实例对象
+            //在入口文件导入vuex将xxx注入vue实例 new Vue({store:xxx})
+            //即可正常使用
+
+            //亦可在同一文件使用，将vuex实例赋值给变量，将变量导入vue实例
+
+            //vuex.Store的参数详解
+            //state，将数据部署在该对象，根实例下所有子组件皆能用，调用方法：this.$store.state.对象成员,下面两个选项动能动态更改这里的值
+            //mutations，在这个对象部署方法，每个方法都接受参数，参数为state对象，用于操作state里面的数据，调用方法：this.$store.commit('函数名')
+            //actions，在这个对象部署方法，每个方法接受一个上下文对象，用于操作mutations里面的方法，调用方法：this.$store.dispatch('函数名')
+            //getters，类似vue实例的计算属性，接受一个参数，参数为state对象
+        </script>
+</body>
+</html>
